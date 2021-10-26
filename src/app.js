@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 
+const limiter = require('./middlewares/limiter');
 const { errors } = require('celebrate');
 const { userRoutes, movieRouter, router404 } = require('./routes/index');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
@@ -11,6 +12,8 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { PORT = 3000 } = process.env;
 const app = express();
 
+// Контролер кол-ва запросов 1=>IP
+app.use(limiter);
 app.use(cookieParser());
 app.use(helmet());
 app.use(bodyParser.json());
