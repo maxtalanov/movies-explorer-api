@@ -1,12 +1,14 @@
 const mongoose = require('mongoose');
-const { regUrl } = require('../utils/const');
+const { isURL } = require('validator');
 
 const movieSchema = new mongoose.Schema({
   country: {
     type: String,
+    required: true,
   },
   director: {
     type: String,
+    required: true,
   },
   duration: {
     type: Number,
@@ -19,45 +21,33 @@ const movieSchema = new mongoose.Schema({
   description: {
     type: String,
     required: true,
-    validate: {
-      validator(v) {
-        return regUrl.test(v);
-      },
-      message: 'Неправильный формат URL',
-    },
   },
   image: {
     type: String,
     required: true,
     validate: {
-      validator(v) {
-        return regUrl.test(v);
-      },
-      message: 'Неправильный формат URL',
-    }, // переместить в ф-ию и в коде ниже
+      validator: (v) => isURL(v),
+      message: 'Неправильный формат ссылки',
+    },
   },
   trailer: {
     type: String,
     required: true,
     validate: {
-      validator(v) {
-        return regUrl.test(v);
-      },
-      message: 'Неправильный формат URL',
+      validator: (v) => isURL(v),
+      message: 'Неправильный формат ссылки',
     },
   },
   thumbnail: {
     type: String,
     required: true,
     validate: {
-      validator(v) {
-        return regUrl.test(v);
-      },
-      message: 'Неправильный формат URL',
+      validator: (v) => isURL(v),
+      message: 'Неправильный формат ссылки',
     },
   },
   owner: {
-    type: Number,
+    type: String,
     required: true,
   },
   movieId: {

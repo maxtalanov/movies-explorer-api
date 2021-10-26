@@ -1,0 +1,72 @@
+const Movie = require('../models/movie');
+const BadRequestErrors = require('../errors/bad-request-err')
+const NotFoundError = require('../errors/not-found-err');
+const ForbiddenErrors = require('../errors/forbidden-err');
+
+// Получить все фильмы пользователя
+module.exports.getMovies = (req, res, next) => {
+  Movie.find({})
+    .then((movies) => {
+      res.status(200).send(movies);
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        next(new NotFoundError('Запрошенные карточки не найдены'));
+      }
+      next(err);
+    });
+};
+
+// Добавление нового фильма
+module.exports.addMovie = (req, res, next) => {
+  console.log(req.body);
+  const {
+    country, director, duration, year, description, image,
+    trailer, thumbnail, owner, movieId, nameRU, nameEN,
+  } = req.body;
+  // const {_id} = req.user;
+
+  Movie.create({
+    country, director, duration, year, description, image,
+    trailer, thumbnail, owner, movieId, nameRU, nameEN,
+  })
+    .then((movie) => {
+      res.status(200).send(movie);
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        next(new BadRequestErrors('Переданы некорректные данные карточки'));
+      }
+      next(err);
+    });
+};
+
+// Удалить фильм
+module.exports.deleteMovie = (req, res, next) => {
+  const { movieId } = req.params;
+  console.log(movieId)
+  const { _id } = req.user;
+
+  Movie.findById(movieId)
+    //добавить что если не валиден
+    .then((movie) => {
+      if (_id === movie.owner.toString()) {
+        Movie.findByIdAndRemove(movie)
+          .then((movieRemove) => {
+            res.status(200).send({movieRemove});
+          });
+      } else {
+        next(new ForbiddenErrors('Данная карточка принадлежит не вам'));
+      }
+    })
+    .catch((err) => {
+      if (err.message === 'NotValidID') {
+        next(new NotFoundError('Карточка с таким ID не нвйдена в базе'));
+      }
+      if (err.name === 'CastError') {
+        next(new BadRequestErrors('Передан некорректный ID карточки'));
+      }
+      next(err);
+    });
+};
+
