@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 
 const { errors } = require('celebrate');
@@ -11,7 +12,7 @@ const { PORT = 3000 } = process.env;
 const app = express();
 
 app.use(cookieParser());
-
+app.use(helmet());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -34,7 +35,6 @@ app.use(errorLogger)
 
 // Обработчик ошибок celebrate
 app.use(errors());
-
 
 // Централизованный обработчик ошибок
 app.use((err, req, res, next) => {
