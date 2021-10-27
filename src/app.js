@@ -15,7 +15,7 @@ const app = express();
 // Контролер кол-ва запросов 1=>IP
 app.use(limiter);
 app.use(cookieParser());
-app.use(helmet());
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -28,6 +28,8 @@ mongoose.connect('mongodb://localhost:27017/moviesdb', {
 // Логер запросов
 app.use(requestLogger);
 
+// Заголовки безопасности
+app.use(helmet());
 // Обработчики роутов
 app.use(userRoutes);
 app.use(movieRouter);
