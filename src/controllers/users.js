@@ -17,9 +17,7 @@ module.exports.getUserMe = (req, res, next) => {
 
   User.findById(_id)
     .then((dataUser) => {
-      res
-        .status(200)
-        .send({
+      res.send({
           email: dataUser.email,
           name: dataUser.name,
         });
@@ -35,7 +33,7 @@ module.exports.updateUserMe =(req, res, next) => {
   const { name, email } = req.body;
 
   User.findByIdAndUpdate(_id, { name, email }, opts)
-    .then((dataUser) => res.status(200).send({
+    .then((dataUser) => res.send({
       email: dataUser.email,
       name: dataUser.name,
     }))

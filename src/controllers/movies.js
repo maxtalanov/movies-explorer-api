@@ -7,7 +7,7 @@ const ForbiddenErrors = require('../errors/forbidden-err');
 module.exports.getMovies = (req, res, next) => {
   Movie.find({})
     .then((movies) => {
-      res.status(200).send(movies);
+      res.send(movies);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -31,7 +31,7 @@ module.exports.addMovie = (req, res, next) => {
     trailer, thumbnail, owner, movieId, nameRU, nameEN,
   })
     .then((movie) => {
-      res.status(200).send(movie);
+      res.send(movie);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -53,7 +53,7 @@ module.exports.deleteMovie = (req, res, next) => {
       if (_id === movie.owner.toString()) {
         Movie.findByIdAndRemove(movie)
           .then((movieRemove) => {
-            res.status(200).send({movieRemove});
+            res.send({movieRemove});
           });
       } else {
         next(new ForbiddenErrors('Данная карточка принадлежит не вам'));
