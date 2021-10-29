@@ -35,6 +35,6 @@ router.post('/signin', celebrate({
 }), login);
 
 //Выход, удалит COOKIES с JWT.
-router.post('/signout', signout);
+router.post('/signout', auth, signout);
 
 module.exports = router;
