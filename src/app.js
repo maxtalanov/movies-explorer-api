@@ -9,6 +9,7 @@ const limiter = require('./middlewares/limiter');
 const { errors } = require('celebrate');
 const { userRoutes, movieRouter, router404 } = require('./routes/index');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
+const ErrorHandler = require('./middlewares/Central-Error-Handler');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -43,18 +44,7 @@ app.use(errorLogger)
 app.use(errors());
 
 // Централизованный обработчик ошибок
-app.use((err, req, res, next) => {
-  console.log(err);
-  const { statusCode = 500, message } = err;
-  res
-    .status(statusCode)
-    .send({
-      message: statusCode === 500
-        ? 'На сервере произошла ошибка'
-        : message,
-    });
-  next();
-});
+app.use(ErrorHandler);
 
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console
