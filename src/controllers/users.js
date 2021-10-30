@@ -84,12 +84,12 @@ module.exports.createUser = (req, res, next) => {
       })
       .catch((err) => {
         if (err.name === 'ValidationError') {
-          next(new NotFoundError('Переданы некорректные данные пользователя'));
+          return next(new NotFoundError('Переданы некорректные данные пользователя'));
         }
         if (err.name === 'MongoError' && err.code === 11000) {
-          next(new Conflict('Что-то пошло не так'));
+          return next(new Conflict('Что-то пошло не так'));
         }
-        next(err);
+         return next(err);
       })
       .catch(next));
 };
@@ -101,7 +101,7 @@ module.exports.login = (req, res, next) => {
   User.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-        next(new UnauthorizedErrors('Запрошенный пользователь не найден'));
+        return next(new UnauthorizedErrors('Запрошенный пользователь не найден'));
       }
       return bcrypt.compare(password, user.password)
         .then((isMatched) => {
@@ -128,7 +128,7 @@ module.exports.login = (req, res, next) => {
         .send({ message: 'Авторизация успешно пройдена' });
     })
     .catch(() => {
-      next(new Conflict('Неверный email или пароль'));
+      return next(new Conflict('Неверный email или пароль'));
     });
 };
 
