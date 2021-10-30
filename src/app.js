@@ -6,7 +6,7 @@ const cookieParser = require('cookie-parser');
 
 const { errors } = require('celebrate');
 const limiter = require('./middlewares/limiter');
-const { userRoutes, movieRouter, router404 } = require('./routes/index');
+const { router } = require('./routes/index');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const ErrorHandler = require('./middlewares/Central-Error-Handler');
 const {
@@ -32,10 +32,9 @@ mongoose.connect(mongoURL, optionsMongooseConfig);
 
 // Заголовки безопасности
 app.use(helmet());
+
 // Обработчики роутов
-app.use(userRoutes);
-app.use(movieRouter);
-app.use(router404);
+app.use(router);
 
 // Логер ошибок
 app.use(errorLogger);
