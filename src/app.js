@@ -14,6 +14,9 @@ const ErrorHandler = require('./middlewares/Central-Error-Handler');
 const { PORT = 3000 } = process.env;
 const app = express();
 
+// Логер запросов
+app.use(requestLogger);
+
 // Контролер кол-ва запросов 1=>IP
 app.use(limiter);
 app.use(cookieParser());
@@ -26,9 +29,6 @@ mongoose.connect('mongodb://localhost:27017/moviesdb', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
-
-// Логер запросов
-app.use(requestLogger);
 
 // Заголовки безопасности
 app.use(helmet());
