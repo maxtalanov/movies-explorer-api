@@ -64,7 +64,8 @@ module.exports.deleteMovie = (req, res, next) => {
         Movie.findByIdAndRemove(movie)
           .then((movieRemove) => {
             res.send({ movieRemove });
-          });
+          })
+          .catch(next);
       } else {
         next(new ForbiddenErrors('Данная карточка принадлежит не вам'));
       }
