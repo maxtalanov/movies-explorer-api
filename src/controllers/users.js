@@ -9,13 +9,16 @@ const NotFoundError = require('../errors/not-found-err');
 const { NODE_ENV, JWT_SECRET, JWT_DEV = 'some-secret-key' } = process.env;
 const secretKey = NODE_ENV === 'production' ? JWT_SECRET : JWT_DEV;
 
-const opts = { runValidators: true, new: true }; //Возможно УДАЛИТЬ!
+const opts = { runValidators: true, new: true };  //Перенести в фаил констант
 
 // Получить конкретного пользователя
 module.exports.getUserMe = (req, res, next) => {
   const { _id } = req.user;
 
   User.findById(_id)
+    .orFail(() => {
+      return next(new NotFoundError('Пользователь по указанному ID не найден'));
+    })
     .then((dataUser) => {
       res.send({
           email: dataUser.email,
@@ -23,7 +26,7 @@ module.exports.getUserMe = (req, res, next) => {
         });
     })
     .catch(() => {
-      next(new UnauthorizedErrors('Неправильный ID пользователя'));
+      return next(new UnauthorizedErrors('Неправильный ID пользователя'));
     });
 };
 
@@ -33,15 +36,24 @@ module.exports.updateUserMe =(req, res, next) => {
   const { name, email } = req.body;
 
   User.findByIdAndUpdate(_id, { name, email }, opts)
+    .orFail(() => {
+      return next(new NotFoundError('Пользователь по указанному ID не найден'))
+    })
     .then((dataUser) => res.send({
       email: dataUser.email,
       name: dataUser.name,
     }))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        next(new BadRequestErrors('Переданы некорректные данные пользователя'));
+      if (err.name === 'CastError') {
+       return next(new BadRequestErrors('Передан не корректный ID польщователя'));
       }
-      next(err);
+      if (err.name === 'ValidationError') {
+        return next(new BadRequestErrors('Переданы некорректные данные пользователя'));
+      }
+      if (err.name === 'MongoError' && err.code === 11000) {
+        return next(new Conflict('Что-то пошло не так'));
+      }
+      return next(err);
     });
 }
 

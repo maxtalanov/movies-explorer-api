@@ -48,9 +48,11 @@ module.exports.deleteMovie = (req, res, next) => {
   const { _id } = req.user;
 
   Movie.findById(movieId)
-    //добавить что если не валиден
+    .orFail(() =>{
+      next(new NotFoundError('Фильм по данному ID не найден'));
+    })
     .then((movie) => {
-      if (_id === movie.owner.toString()) {
+      if (_id === movie.owner.toString() || null) {
         Movie.findByIdAndRemove(movie)
           .then((movieRemove) => {
             res.send({movieRemove});
