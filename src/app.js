@@ -1,4 +1,3 @@
-require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -10,8 +9,11 @@ const { errors } = require('celebrate');
 const { userRoutes, movieRouter, router404 } = require('./routes/index');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const ErrorHandler = require('./middlewares/Central-Error-Handler');
-
-const { PORT = 3000 } = process.env;
+const {
+  optionsMongooseConfig,
+  mongoURL,
+  PORT,
+} = require('./utils/const');
 const app = express();
 
 // Логер запросов
@@ -25,10 +27,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Конектинг БД
-mongoose.connect('mongodb://localhost:27017/moviesdb', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+mongoose.connect(mongoURL, optionsMongooseConfig);
 
 // Заголовки безопасности
 app.use(helmet());
