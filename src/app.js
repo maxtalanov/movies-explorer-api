@@ -4,8 +4,8 @@ const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 
-const limiter = require('./middlewares/limiter');
 const { errors } = require('celebrate');
+const limiter = require('./middlewares/limiter');
 const { userRoutes, movieRouter, router404 } = require('./routes/index');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const ErrorHandler = require('./middlewares/Central-Error-Handler');
@@ -14,6 +14,7 @@ const {
   mongoURL,
   PORT,
 } = require('./utils/const');
+
 const app = express();
 
 // Логер запросов
@@ -37,7 +38,7 @@ app.use(movieRouter);
 app.use(router404);
 
 // Логер ошибок
-app.use(errorLogger)
+app.use(errorLogger);
 
 // Обработчик ошибок celebrate
 app.use(errors());
@@ -46,6 +47,5 @@ app.use(errors());
 app.use(ErrorHandler);
 
 app.listen(PORT, () => {
-  // eslint-disable-next-line no-console
   console.log(`Сервер запущен на ${PORT} порту`);
 });

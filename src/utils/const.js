@@ -10,9 +10,8 @@ const optionsMongooseConfig = {
   useUnifiedTopology: true,
 };
 
-
 module.exports = {
   optionsMongooseConfig,
   mongoURL,
   PORT,
-}
+};

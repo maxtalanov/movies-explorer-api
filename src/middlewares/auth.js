@@ -4,8 +4,6 @@ const UnauthorizedErrors = require('../errors/unauthorized-err');
 const { NODE_ENV, JWT_SECRET, JWT_DEV = 'some-secret-key' } = process.env;
 const secretKey = NODE_ENV === 'production' ? JWT_SECRET : JWT_DEV;
 
-
-
 module.exports = (req, res, next) => {
   // const { authorization } = req.headers; УДАЛИТЬ!
   const cookiesJWT = req.cookies.jwt;

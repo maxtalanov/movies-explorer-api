@@ -8,7 +8,7 @@ const {
 } = require('../controllers/movies');
 
 const method = (value) => {
-  const result = validator.isURL(value, {require_protocol: true});
+  const result = validator.isURL(value, { require_protocol: true });
   if (result) {
     return value;
   }

@@ -1,9 +1,9 @@
 const router = require('express').Router();
-const {celebrate, Joi} = require('celebrate');
+const { celebrate, Joi } = require('celebrate');
 const auth = require('../middlewares/auth');
 
 const {
-  getUserMe, createUser, updateUserMe, login, signout
+  getUserMe, createUser, updateUserMe, login, signout,
 } = require('../controllers/users');
 
 // Вернет инфо, о пользователе.
@@ -26,7 +26,7 @@ router.post('/signup', celebrate({
   }),
 }), createUser);
 
-//Вход, вернет JWT c COOKIES.
+// Вход, вернет JWT c COOKIES.
 router.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
@@ -34,7 +34,7 @@ router.post('/signin', celebrate({
   }),
 }), login);
 
-//Выход, удалит COOKIES с JWT.
+// Выход, удалит COOKIES с JWT.
 router.post('/signout', auth, signout);
 
 module.exports = router;

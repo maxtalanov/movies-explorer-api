@@ -2,50 +2,44 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const Conflict = require('../errors/conflict-err');
-const BadRequestErrors = require ('../errors/bad-request-err');
-const UnauthorizedErrors =require('../errors/unauthorized-err');
+const BadRequestErrors = require('../errors/bad-request-err');
+const UnauthorizedErrors = require('../errors/unauthorized-err');
 const NotFoundError = require('../errors/not-found-err');
 
 const { NODE_ENV, JWT_SECRET, JWT_DEV = 'some-secret-key' } = process.env;
 const secretKey = NODE_ENV === 'production' ? JWT_SECRET : JWT_DEV;
 
-const opts = { runValidators: true, new: true };  //Перенести в фаил констант
+const opts = { runValidators: true, new: true }; // Перенести в фаил констант
 
 // Получить конкретного пользователя
 module.exports.getUserMe = (req, res, next) => {
   const { _id } = req.user;
 
   User.findById(_id)
-    .orFail(() => {
-      return next(new NotFoundError('Пользователь по указанному ID не найден'));
-    })
+    .orFail(() => next(new NotFoundError('Пользователь по указанному ID не найден')))
     .then((dataUser) => {
       res.send({
-          email: dataUser.email,
-          name: dataUser.name,
-        });
+        email: dataUser.email,
+        name: dataUser.name,
+      });
     })
-    .catch(() => {
-      return next(new UnauthorizedErrors('Неправильный ID пользователя'));
-    });
+    .catch(() => next(new UnauthorizedErrors('Неправильный ID пользователя')));
 };
 
 // Обновляет информицию пользоватиеля
-module.exports.updateUserMe =(req, res, next) => {
+module.exports.updateUserMe = (req, res, next) => {
   const { _id } = req.user;
   const { name, email } = req.body;
 
   User.findByIdAndUpdate(_id, { name, email }, opts)
-    .orFail(() => {
-      return next(new NotFoundError('Пользователь по указанному ID не найден'))
-    })
+    .orFail(() => next(new NotFoundError('Пользователь по указанному ID не найден')))
     .then((dataUser) => res.send({
       email: dataUser.email,
       name: dataUser.name,
     }))
     .catch((err) => {
       if (err.name === 'CastError') {
-       return next(new BadRequestErrors('Передан не корректный ID польщователя'));
+        return next(new BadRequestErrors('Передан не корректный ID польщователя'));
       }
       if (err.name === 'ValidationError') {
         return next(new BadRequestErrors('Переданы некорректные данные пользователя'));
@@ -55,12 +49,12 @@ module.exports.updateUserMe =(req, res, next) => {
       }
       return next(err);
     });
-}
+};
 
 // Регистрация нового пользователя
 module.exports.createUser = (req, res, next) => {
   const {
-    email, password, name
+    email, password, name,
   } = req.body;
 
   User.findOne({ email })
@@ -89,7 +83,7 @@ module.exports.createUser = (req, res, next) => {
         if (err.name === 'MongoError' && err.code === 11000) {
           return next(new Conflict('Что-то пошло не так'));
         }
-         return next(err);
+        return next(err);
       })
       .catch(next));
 };
@@ -127,9 +121,7 @@ module.exports.login = (req, res, next) => {
         })
         .send({ message: 'Авторизация успешно пройдена' });
     })
-    .catch(() => {
-      return next(new Conflict('Неверный email или пароль'));
-    });
+    .catch(() => next(new Conflict('Неверный email или пароль')));
 };
 
 // Выход пользователя из системы
