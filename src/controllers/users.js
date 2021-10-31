@@ -23,7 +23,7 @@ module.exports.getUserMe = (req, res, next) => {
         name: dataUser.name,
       });
     })
-    .catch(() => next(new UnauthorizedErrors('Неправильный ID пользователя')));
+    .catch(next);
 };
 
 // Обновляет информицию пользоватиеля
