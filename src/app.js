@@ -6,7 +6,7 @@ const cookieParser = require('cookie-parser');
 
 const { errors } = require('celebrate');
 const limiter = require('./middlewares/limiter');
-const cors = require('./middlewares/cors')
+const cors = require('./middlewares/cors');
 const { router } = require('./routes/index');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const ErrorHandler = require('./middlewares/Central-Error-Handler');
@@ -34,7 +34,7 @@ mongoose.connect(mongoURL, optionsMongooseConfig);
 // Заголовки безопасности
 app.use(helmet());
 
-//cors
+// cors
 app.use(cors);
 // Обработчики роутов
 app.use(router);
