@@ -36,6 +36,7 @@ app.use(helmet());
 
 // cors
 app.use(cors);
+
 // Обработчики роутов
 app.use(router);
 
