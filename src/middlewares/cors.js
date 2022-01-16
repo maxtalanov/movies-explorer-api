@@ -1,9 +1,10 @@
 const allowedCors = [
-  // 'https://movies-new.nomoredomains.monster',
-  // 'http://movies-new.nomoredomains.monster',
-  // 'http://localhost:3000',
-  // 'http://localhost:3001',
-  '*',
+  'https://movies-new.nomoredomains.monster',
+  'http://movies-new.nomoredomains.monster',
+  'https://maxtalanov.ru',
+  'http://maxtalanov.ru',
+  'http://localhost:3000',
+  'http://localhost:3001',
 ];
 
 // eslint-disable-next-line no-unused-vars
