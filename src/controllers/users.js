@@ -100,7 +100,7 @@ module.exports.login = (req, res, next) => {
       return bcrypt.compare(password, user.password)
         .then((isMatched) => {
           if (!isMatched) {
-            next(new UnauthorizedErrors('Неверный email или пароль'));
+            return next(new UnauthorizedErrors('Неверный email или пароль'));
           }
           return user;
         });
@@ -116,8 +116,8 @@ module.exports.login = (req, res, next) => {
         .cookie('jwt', token, {
           maxAge: 3600000 * 24 * 7,
           httpOnly: true,
-          // sameSite: 'None',
-          // secure: true,
+          sameSite: 'None',
+          secure: true,
         })
         .send({ message: 'Авторизация успешно пройдена' });
     })
