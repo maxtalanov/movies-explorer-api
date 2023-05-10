@@ -31,12 +31,19 @@ module.exports.updateUserMe = (req, res, next) => {
   const { _id } = req.user;
   const { name, email } = req.body;
 
-  User.findByIdAndUpdate(_id, { name, email }, opts)
-    .orFail(() => next(new NotFoundError('Пользователь по указанному ID не найден')))
-    .then((dataUser) => res.send({
-      email: dataUser.email,
-      name: dataUser.name,
-    }))
+  User.findOne({ email })
+    .then((foundUser) => {
+      if (foundUser && foundUser._id.toString() !== _id) {
+        return Promise.reject(new Conflict('Email уже занят'));
+      }
+
+      return User.findByIdAndUpdate(_id, { name, email }, opts)
+        .orFail(() => next(new NotFoundError('Пользователь по указанному ID не найден')))
+        .then((dataUser) => res.send({
+          email: dataUser.email,
+          name: dataUser.name,
+        }));
+    })
     .catch((err) => {
       if (err.name === 'CastError') {
         return next(new BadRequestErrors('Передан не корректный ID польщователя'));
