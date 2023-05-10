@@ -34,7 +34,7 @@ module.exports.updateUserMe = (req, res, next) => {
   User.findOne({ email })
     .then((foundUser) => {
       if (foundUser && foundUser._id.toString() !== _id) {
-        return Promise.reject(new Conflict('Email уже занят'));
+        return Promise.reject(new Conflict('Данный Email использовать нельзя попробуйте другой'));
       }
 
       return User.findByIdAndUpdate(_id, { name, email }, opts)
